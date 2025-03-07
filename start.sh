@@ -1,0 +1,1 @@
+go run src/* 2>> logs.txt
