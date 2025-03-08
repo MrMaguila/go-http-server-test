@@ -3,25 +3,30 @@ package main
 import (
     "log"
     "net/http"
+    "fmt"
 )
 
-const PORT string = ":8080"
 
 func main() {
-    log.Println("Starting server...")
+    log.Println("Starting server...");
+    use_ssl := PATH_TO_SSL_CERT_FILE != "" && PATH_TO_SSL_KEY_FILE != "";
 
     // Registering our handler functions
-    http.HandleFunc("/main", callEndpoint)
+    http.HandleFunc("/main", callEndpoint);
 
-    log.Println("Started on port", PORT)
+    if use_ssl {
+        fmt.Println("listening on https://", fmt.Sprintf("%s:%s", ADDRESS_TO_BIND, PORT));
+    } else {
+        fmt.Println("listening on: http://", fmt.Sprintf("%s:%s", ADDRESS_TO_BIND, PORT));
+    }
 
     var err error;
 
     // Listen for requests
     if PATH_TO_SSL_CERT_FILE != "" && PATH_TO_SSL_KEY_FILE != "" {
-        err = http.ListenAndServeTLS(PORT, PATH_TO_SSL_CERT_FILE, PATH_TO_SSL_KEY_FILE, nil);
+        err = http.ListenAndServeTLS(fmt.Sprintf("%s:%s", ADDRESS_TO_BIND, PORT), PATH_TO_SSL_CERT_FILE, PATH_TO_SSL_KEY_FILE, nil);
     } else {
-        err = http.ListenAndServe(PORT, nil);
+        err = http.ListenAndServe(fmt.Sprintf("%s:%s", ADDRESS_TO_BIND, PORT), nil);
     }
 
     if err != nil {

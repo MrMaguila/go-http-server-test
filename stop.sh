@@ -1,0 +1,1 @@
+pkill go-https-server
